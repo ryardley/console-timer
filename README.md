@@ -63,9 +63,9 @@ consoleTimer({
 You can use (mutable) objects as timer keys.
 
 ```javascript
-myobj.time(MyComponent);
+console.time(MyComponent);
 somethingExpensive();
-myobj.timeEnd(MyComponent); // foo(203ms)
+console.timeEnd(MyComponent); // foo(203ms)
 ```
 
 ## Don't use console if you don't want to
