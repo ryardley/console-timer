@@ -23,19 +23,21 @@ console.timeEnd('foo'); // foo(203ms)
 import consoleTimer from 'console-timer';
 consoleTimer();
 
-const finish = console.time('foo');
+const finish = console.time.bound('foo');
 somethingExpensive();
 finish(); // foo(203ms)
 ```
 
 ## Name collisions
-You can pass in a `methodMap` to override the method names if you are worried about collision.
+You can pass in a method map to override the method names if you are worried about collision.
 
 ```javascript
 import consoleTimer from 'console-timer';
 consoleTimer({
-  time: 't',
-  timeEnd: 'te',
+  methods: {
+    time: 't',
+    timeEnd: 'te'
+  }
 });
 
 console.t('foo');
@@ -45,7 +47,7 @@ console.te('foo'); // foo(203ms)
 
 ## Use objects as references
 
-You can use objects as timer keys. (Must be mutable)
+You can use (mutable) objects as timer keys.
 
 ```javascript
 myobj.time(MyComponent);
@@ -55,14 +57,14 @@ myobj.timeEnd(MyComponent); // foo(203ms)
 
 ## Don't use console if you don't want to
 
-You can use another object as context if you don't want it on console
+You can use another context if you don't want monkey patched methods on console
 
 ```javascript
 import consoleTimer from 'console-timer';
 
 let myobj = {};
 
-consoleTimer(null, myobj);
+consoleTimer({context: myobj});
 
 myobj.time('foo');
 somethingExpensive();

@@ -1,3 +1,5 @@
+const chalk = require('chalk');
+
 function takeAWhile(howLong){
   var array = [];
   for(var i = 0; i < howLong; i++) {
@@ -15,18 +17,21 @@ console.log = function(msg) {
 }
 
 function lastLogMatches(regx) {
-  var match = lastMsg.match(regx);
-  oldlog(match ? 'PASSED!' : 'FAILED!');
+  var stripped = lastMsg.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '');
+  var match = stripped.match(regx);
+  oldlog(match ? chalk.green('PASSED!') : chalk.red('FAILED!'));
   if(!match){
-    throw new Error('Test failure!');
+    throw new Error('Test failure at: ' + stripped);
   }
   lastMsg = '';
 }
 
 require('./index')({
-  time: 't',
-  timeEnd: 'te',
-  disableTimers: 'tdisable'
+  methods: {
+    time: 't',
+    timeEnd: 'te',
+    disableTimers: 'tdisable'
+  }
 });
 
 var myobj = {foo:'foo'};
@@ -40,6 +45,12 @@ console.te(myobj);
 lastLogMatches(/id\:1\(\d*ms\) /);
 console.log('ending timer');
 
+console.log('test empty timer reference');
+console.t();
+takeAWhile(100000);
+console.te();
+lastLogMatches(/\(\d*ms\) /);
+console.log('end test empty timer reference');
 
 console.tdisable();
 console.log('should output nothing');
@@ -51,7 +62,7 @@ console.log('did output nothing');
 console.enableTimers();
 
 console.log('test bound function');
-var end = console.t('myobj');
+var end = console.t.bound('myobj');
 takeAWhile(100000);
 end();
 lastLogMatches(/myobj\(\d*ms\) /);
