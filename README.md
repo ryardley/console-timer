@@ -45,6 +45,19 @@ somethingExpensive();
 console.te('foo'); // foo(203ms)
 ```
 
+## Customize your colors
+
+You can pass a colors object to the options when setting up console-timer for multicoloured ANSI terminals
+
+```javascript
+consoleTimer({
+  colors: {
+    name: 'cyan',
+    time: 'yellow',
+    msg: 'red',
+  }
+});
+```
 ## Use objects as references
 
 You can use (mutable) objects as timer keys.
