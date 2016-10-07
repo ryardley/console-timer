@@ -42,14 +42,14 @@ console.t(myobj);
 lastLogMatches(/^id\:1\(\d*ms\) - INTERRUPTED\!$/);
 takeAWhile(100000);
 console.te(myobj);
-lastLogMatches(/id\:1\(\d*ms\) /);
+lastLogMatches(/id\:1\(\d*ms\)/);
 console.log('ending timer');
 
 console.log('test empty timer reference');
 console.t();
 takeAWhile(100000);
 console.te();
-lastLogMatches(/\(\d*ms\) /);
+lastLogMatches(/\(\d*ms\)/);
 console.log('end test empty timer reference');
 
 console.tdisable();
@@ -65,4 +65,4 @@ console.log('test bound function');
 var end = console.t.bound('myobj');
 takeAWhile(100000);
 end();
-lastLogMatches(/myobj\(\d*ms\) /);
+lastLogMatches(/myobj\(\d*ms\)/);

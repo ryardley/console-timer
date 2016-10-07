@@ -53,14 +53,12 @@ module.exports = function consoleTimer(options) {
     var text = {
       name: name === UNDEFINED_REFERENCE ? '' : name,
       time: '(' + (Date.now() - timer) + 'ms)',
-      gap: ' ',
-      msg: message || ''
+      msg: message ? ' ' + message : ''
     }
 
     return [
       chalk[cols.name](text.name),
       chalk[cols.time](text.time),
-      text.gap,
       chalk[cols.msg](text.msg)
     ].join('');
   }
