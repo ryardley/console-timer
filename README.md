@@ -14,7 +14,7 @@ consoleTimer();
 
 console.time('foo');
 somethingExpensive();
-console.timeEnd('foo'); // foo: 203ms
+console.timeEnd('foo'); // foo(203ms)
 ```
 
 ## Bound finish function
@@ -25,7 +25,7 @@ consoleTimer();
 
 const finish = console.time('foo');
 somethingExpensive();
-finish(); // foo: 203ms
+finish(); // foo(203ms)
 ```
 
 ## Name collisions
@@ -40,7 +40,7 @@ consoleTimer({
 
 console.t('foo');
 somethingExpensive();
-console.te('foo'); // foo: 203ms
+console.te('foo'); // foo(203ms)
 ```
 
 ## Use objects as references
@@ -50,7 +50,7 @@ You can use objects as timer keys. (Must be mutable)
 ```javascript
 myobj.time(MyComponent);
 somethingExpensive();
-myobj.timeEnd(MyComponent); // foo: 203ms
+myobj.timeEnd(MyComponent); // foo(203ms)
 ```
 
 ## Don't use console if you don't want to
@@ -66,7 +66,7 @@ consoleTimer(null, myobj);
 
 myobj.time('foo');
 somethingExpensive();
-myobj.timeEnd('foo'); // foo: 203ms
+myobj.timeEnd('foo'); // foo(203ms)
 ```
 
 ## Multiple starts
@@ -80,5 +80,5 @@ consoleTimer();
 console.time('foo');
 console.time('foo'); // foo(0ms) - INTERRUPTED!
 somethingExpensive();
-console.timeEnd('foo'); // foo: 203ms
+console.timeEnd('foo'); // foo(203ms)
 ```
