@@ -86,7 +86,6 @@ module.exports = function consoleTimer(options) {
    * Finish a timer. Pass in a reference string or object to attach the timer to.
    */
   function timeEnd(reference) {
-    debugger;
     if (disabled) return;
     var name = getIdemKey(reference);
     var timer = timers[name];
