@@ -1,6 +1,6 @@
 {
   "name": "console-timer",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "A better timer for the console.",
   "main": "index.js",
   "scripts": {
