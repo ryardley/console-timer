@@ -2,7 +2,6 @@ var chalk = require('chalk');
 var UNDEFINED_REFERENCE = '__UNDEFINED_REFERENCE__';
 // monkey patching console
 module.exports = function consoleTimer(options) {
-
   var defaults = {
     context: console,
     colors: { name: 'white', time: 'white', msg: 'white' }
@@ -16,16 +15,17 @@ module.exports = function consoleTimer(options) {
     time: time,
     timeEnd: timeEnd,
     disableTimers: disableTimers,
-    enableTimers: enableTimers
+    enableTimers: enableTimers,
+    timeReport: timeReport
   };
 
-  var cols = Object.keys(defaults.colors).reduce(function(memo, key) {
+  var cols = Object.keys(defaults.colors).reduce(function reducerColors(memo, key) {
     memo[key] = colors[key] || defaults.colors[key];
     return memo;
   }, {});
 
   // map methods to context
-  Object.keys(methods).reduce(function(memo, key) {
+  Object.keys(methods).reduce(function reduceMethodsToContext(memo, key) {
     var keyname = methodMap && methodMap[key] || key;
     memo[keyname] = methods[key];
     return memo;
@@ -36,25 +36,25 @@ module.exports = function consoleTimer(options) {
   var idcount = 0;
 
   function getIdemKey(obj) {
-    if(typeof obj === 'string') return obj;
+    if (typeof obj === 'string') return obj;
 
-    if(!obj) {
+    if (!obj) {
       return UNDEFINED_REFERENCE;
     }
 
-    if(!obj._tid_) {
+    if (!obj._tid_) {
       obj._tid_ = 'id:' + ++idcount;
     }
 
     return obj._tid_;
   }
 
-  function message(name, timer, message) {
+  function message(name, timer, msg) {
     var text = {
       name: name === UNDEFINED_REFERENCE ? '' : name,
       time: '(' + (Date.now() - timer) + 'ms)',
-      msg: message ? ' ' + message : ''
-    }
+      msg: msg ? ' ' + msg : ''
+    };
 
     return [
       chalk[cols.name](text.name),
@@ -63,37 +63,49 @@ module.exports = function consoleTimer(options) {
     ].join('');
   }
 
+  function reportTimer(reference, thenDelete) {
+    if (disabled) return;
+    var name = getIdemKey(reference);
+    var timer = timers[name];
+    if (timer) {
+      console.log(message(name, timer));
+      if (thenDelete) {
+        delete timers[name];
+      }
+    }
+  }
+
   /**
    * Start a timer. Pass in a reference string or object to attach the timer to.
    */
   function time(reference) {
-    reference = reference || UNDEFINED_REFERENCE;
+    var timerReference = reference || UNDEFINED_REFERENCE;
     if (disabled) return;
-    var name = getIdemKey(reference);
+    var name = getIdemKey(timerReference);
     var timer = timers[name];
-    if(timer){
+    if (timer) {
       console.log(message(name, timer, '- INTERRUPTED!'));
     }
     timers[name] = Date.now();
   }
 
-  time.bound = function(reference) {
+  time.bound = function timeWithBoundEnd(reference) {
     time(reference);
     return timeEnd.bind(null, reference);
-  }
+  };
 
   /**
    * Finish a timer. Pass in a reference string or object to attach the timer to.
    */
   function timeEnd(reference) {
-    if (disabled) return;
-    var name = getIdemKey(reference);
-    var timer = timers[name];
-    if(timer){
-      var diff = Date.now() - timer;
-      console.log(message(name, timer));
-      delete timers[name];
-    }
+    reportTimer(reference, true);
+  }
+
+  /**
+   * Report and keep the timer running
+   */
+  function timeReport(reference) {
+    reportTimer(reference);
   }
 
   /**
@@ -109,4 +121,4 @@ module.exports = function consoleTimer(options) {
   function enableTimers() {
     disabled = false;
   }
-}
+};
