@@ -42,7 +42,7 @@ console.t(myobj);
 lastLogMatches(/^id\:1\(\d*ms\) - INTERRUPTED\!$/);
 takeAWhile(100000);
 console.te(myobj);
-lastLogMatches(/id\:1\(\d*ms\)/);
+lastLogMatches(/id\:1\(\d*ms\)\ \=timer\ finished\=/);
 console.log('ending timer');
 
 console.log('test empty timer reference');

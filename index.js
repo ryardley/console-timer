@@ -63,12 +63,19 @@ module.exports = function consoleTimer(options) {
     ].join('');
   }
 
-  function reportTimer(reference, thenDelete) {
+  function truthy(item) {
+    return Boolean(item);
+  }
+
+  function reportTimer(reference, thenDelete, ctx) {
     if (disabled) return;
     var name = getIdemKey(reference);
     var timer = timers[name];
     if (timer) {
-      console.log(message(name, timer));
+      var args = [ message(name, timer) ].concat(ctx).filter(truthy);
+
+      console.log.apply(console, args);
+
       if (thenDelete) {
         delete timers[name];
       }
@@ -86,6 +93,7 @@ module.exports = function consoleTimer(options) {
     if (timer) {
       console.log(message(name, timer, '- INTERRUPTED!'));
     }
+    console.log(name + '(0ms)', '=timer started=');
     timers[name] = Date.now();
   }
 
@@ -98,14 +106,18 @@ module.exports = function consoleTimer(options) {
    * Finish a timer. Pass in a reference string or object to attach the timer to.
    */
   function timeEnd(reference) {
-    reportTimer(reference, true);
+    reportTimer(reference, true, '=timer finished=');
   }
 
   /**
    * Report and keep the timer running
    */
-  function timeReport(reference) {
-    reportTimer(reference);
+  function timeReport() {
+    var args = Array.prototype.slice.call(arguments);
+    var reference = args[0];
+    var rest = args.slice(1);
+
+    reportTimer(reference, false, rest);
   }
 
   /**
